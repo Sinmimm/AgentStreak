@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AgentStreak — Daily check-in for Agent ID holders. Build your on-chain streak, earn a soulbound badge.">
+  <title>AgentStreak — Daily Check-in for Agent ID Holders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">&#128293;</span>
+        <span class="brand-name">AgentStreak</span>
+      </div>
+      <button id="connectBtn" class="btn btn-primary" type="button">Connect Wallet</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Contract status banner -->
+    <div id="deployBanner" class="banner banner-warn" role="status" hidden>
+      <strong>Contract not deployed yet.</strong>
+      The AgentStreak contract is not live on BNB Chain. Wallet connection and
+      Agent ID checks work, but check-in and the leaderboard will activate once
+      the contract is deployed.
+    </div>
+
+    <section class="hero">
+      <h1>AgentStreak</h1>
+      <p class="tagline">Daily check-in for Agent ID holders &mdash; build your on-chain streak, earn a soulbound badge.</p>
+      <p class="sub">One check-in per day. Miss a day, and your streak resets. Your streak lives entirely on-chain.</p>
+      <p class="hackathon-note">Built for the Agent ID Hackathon.</p>
+    </section>
+
+    <!-- Status panel -->
+    <section class="card" id="statusCard" aria-labelledby="statusTitle">
+      <h2 id="statusTitle">Your status</h2>
+      <dl class="status-grid">
+        <div class="status-item">
+          <dt>Wallet</dt>
+          <dd id="walletAddress">Not connected</dd>
+        </div>
+        <div class="status-item">
+          <dt>Network</dt>
+          <dd id="networkStatus">—</dd>
+        </div>
+        <div class="status-item">
+          <dt>Agent ID</dt>
+          <dd id="agentIdStatus">—</dd>
+        </div>
+        <div class="status-item">
+          <dt>Current streak</dt>
+          <dd id="streakValue" class="big">—</dd>
+        </div>
+        <div class="status-item">
+          <dt>Total check-ins</dt>
+          <dd id="totalCheckInsValue" class="big">—</dd>
+        </div>
+        <div class="status-item">
+          <dt>Badge</dt>
+          <dd id="badgeValue" class="big">—</dd>
+        </div>
+        <div class="status-item">
+          <dt>Today</dt>
+          <dd id="todayStatus">—</dd>
+        </div>
+        <div class="status-item">
+          <dt>On-chain day</dt>
+          <dd id="currentDayValue">—</dd>
+        </div>
+      </dl>
+
+      <div class="checkin-row">
+        <button id="checkInBtn" class="btn btn-primary btn-large" type="button" disabled>Check In Today</button>
+        <p id="checkInHint" class="hint">Connect your wallet to check in.</p>
+      </div>
+
+      <div id="txStatus" class="tx-status" aria-live="polite" hidden></div>
+    </section>
+
+    <!-- Global stats -->
+    <section class="card" aria-labelledby="statsTitle">
+      <h2 id="statsTitle">Network stats</h2>
+      <dl class="status-grid">
+        <div class="status-item">
+          <dt>Total users</dt>
+          <dd id="totalUsersValue" class="big">—</dd>
+        </div>
+        <div class="status-item">
+          <dt>Contract</dt>
+          <dd id="contractAddress" class="mono">Not deployed</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Leaderboard -->
+    <section class="card" aria-labelledby="leaderboardTitle">
+      <h2 id="leaderboardTitle">Top Streaks</h2>
+      <p id="leaderboardNote" class="muted">Leaderboard will activate after the contract is live.</p>
+      <ol id="leaderboardList" class="leaderboard" hidden></ol>
+      <button id="refreshLeaderboardBtn" class="btn btn-secondary" type="button" hidden>Refresh leaderboard</button>
+    </section>
+
+    <!-- How it works -->
+    <section class="card" aria-labelledby="howTitle">
+      <h2 id="howTitle">How it works</h2>
+      <ol class="steps">
+        <li>
+          <strong>1. Connect your wallet</strong>
+          <span>Use any wallet that holds your Agent ID, on BNB Chain (chain 56). No account, no sign-up, no seed phrase — ever.</span>
+        </li>
+        <li>
+          <strong>2. Check in once a day</strong>
+          <span>Press &ldquo;Check In Today&rdquo; and confirm the transaction in your own wallet. You only pay the BSC network gas fee.</span>
+        </li>
+        <li>
+          <strong>3. Keep the streak alive</strong>
+          <span>Check in every day to grow your streak and unlock a soulbound badge. Miss a day and the streak resets to zero.</span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- About / FAQ -->
+    <section class="card" aria-labelledby="aboutTitle">
+      <h2 id="aboutTitle">About &amp; FAQ</h2>
+      <div class="faq">
+        <h3>What is AgentStreak?</h3>
+        <p>A simple daily check-in dApp for Agent ID holders. Each check-in is recorded on-chain, building a public streak and a soulbound badge tied to your wallet.</p>
+
+        <h3>Who can check in?</h3>
+        <p>Anyone holding at least one Agent ID (SPACE ID Agent ID, ERC-721) on BNB Chain. The contract checks your balance before accepting a check-in.</p>
+
+        <h3>What does it cost?</h3>
+        <p>Nothing except the BSC network gas fee for the check-in transaction. There is no fee charged by AgentStreak.</p>
+
+        <h3>What is the badge?</h3>
+        <p>A non-transferable (soulbound) badge level that grows with your streak. It cannot be sold or transferred — it only proves your consistency.</p>
+
+        <h3>What if I miss a day?</h3>
+        <p>Your streak resets to zero, but your total check-in count is kept. Start a new streak the next day.</p>
+
+        <h3>Does AgentStreak hold my funds or keys?</h3>
+        <p>No. AgentStreak never asks for your seed phrase or private key, never takes custody of anything, and never asks you to approve token spending. Every transaction is confirmed by you, in your own wallet.</p>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      Free to use &mdash; you only pay BSC network gas. No rewards or returns are promised.
+      AgentStreak never asks for your seed phrase or private key.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>AgentStreak &middot; Built for the Agent ID Hackathon &middot; Runs on BNB Chain (56)</p>
+      <p class="muted">Contract: <span id="footerContract" class="mono">not deployed yet</span></p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
